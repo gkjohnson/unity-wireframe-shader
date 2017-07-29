@@ -1,4 +1,6 @@
 # unity-wireframe-shader
+![example](/docs/example.png)
+
 Unity wireframe material using Geometry Shaders built for the [UCLA Game Lab](http://games.ucla.edu/resource/unity-wireframe-shader/) and [Unity Asset Store](https://www.assetstore.unity3d.com/en/#!/content/21897) in 2013.
 
 Based on work from [this paper](http://cgg-journal.com/2008-2/06/index.html).
@@ -18,4 +20,3 @@ Whether or not to discard pixels outside the wireframe, creating a harder edge, 
 ## TODO
 - [ ] Move all shader variants into one shader using keywords
 - [ ] Build a custom material inspector
-- [ ] Get pictures

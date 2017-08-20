@@ -93,7 +93,7 @@ float4 UCLAGL_frag(UCLAGL_g2f input) : COLOR
 	//find the smallest distance
 	float val = min(input.dist.x, min(input.dist.y, input.dist.z));
 
-    #if !DISTANCE_AGNOSTIC
+    #if !UCLAGL_DISTANCE_AGNOSTIC
     val *= input.pos.w;
     #endif
 
@@ -105,7 +105,7 @@ float4 UCLAGL_frag(UCLAGL_g2f input) : COLOR
     float4 col = _Color * tex2D( _MainTex, input.uv);
 	col.a = min(val * _Firmness, 1);
 
-    #if CUTOUT
+    #if UCLAGL_CUTOUT
     if (col.a < 0.5f) discard;
     col.a = 1.0f;
     #endif

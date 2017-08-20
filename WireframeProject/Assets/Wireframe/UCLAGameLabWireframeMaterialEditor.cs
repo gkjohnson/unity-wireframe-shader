@@ -16,11 +16,14 @@ public class UCLAGameLabWireframeMaterialEditor : ShaderGUI
         Material mat = materialEditor.target as Material;
 
         EditorGUI.BeginChangeCheck();
+
+        Debug.Log(mat.GetFloat("_Cull"));
         bool cutout = EditorGUILayout.Toggle("Cutout", mat.IsKeywordEnabled("CUTOUT"));
-        bool doubleSided = EditorGUILayout.Toggle("Double Sided", mat.shader.name == DOUBLE_SIDED_SHADER);
+        bool distanceAgnostic = EditorGUILayout.Toggle("Distance Agnostic", mat.IsKeywordEnabled("DISTANCE_AGNOSTIC"));
+        bool doubleSided = EditorGUILayout.Toggle("Double Sided", mat.shader.name == DOUBLE_SIDED_SHADER || mat.GetFloat("_Cull") == (float)CullMode.Off);
+
         if (EditorGUI.EndChangeCheck())
         {
-            
             if (cutout)
             {
                 mat.EnableKeyword("CUTOUT");
@@ -44,6 +47,10 @@ public class UCLAGameLabWireframeMaterialEditor : ShaderGUI
                 mat.shader = Shader.Find(doubleSided ? DOUBLE_SIDED_SHADER : SINGLE_SIDED_SHADER);
                 mat.SetInt("_Cull", (int) CullMode.Back);
             }
+
+            // Toggle 
+            if (distanceAgnostic) mat.EnableKeyword("DISTANCE_AGNOSTIC");
+            else mat.DisableKeyword("DISTANCE_AGNOSTIC");
         }
     }
 

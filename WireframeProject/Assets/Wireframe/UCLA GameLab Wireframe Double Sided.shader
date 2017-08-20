@@ -35,21 +35,10 @@ Shader "UCLA Game Lab/Wireframe Double Sided"
             #pragma target 5.0
             #pragma vertex UCLAGL_vert
             #pragma geometry UCLAGL_geom
-            #pragma fragment frag
+            #pragma fragment UCLAGL_frag
             #pragma shader_feature CUTOUT
+            #pragma shader_feature DISTANCE_AGNOSTIC
 
-            // Fragment Shader
-            float4 frag(UCLAGL_g2f input) : COLOR
-            {
-                float4 col = UCLAGL_frag(input);
-
-                #if CUTOUT
-                if (col.a < 0.5f) discard;
-                else col.a = 1.0f;
-                #endif
-
-                return col;
-            }
 			ENDCG
 		}
 
@@ -68,21 +57,10 @@ Shader "UCLA Game Lab/Wireframe Double Sided"
             #pragma target 5.0
             #pragma vertex UCLAGL_vert
             #pragma geometry UCLAGL_geom
-            #pragma fragment frag
+            #pragma fragment UCLAGL_frag
             #pragma shader_feature CUTOUT
+            #pragma shader_feature DISTANCE_AGNOSTIC
 
-            // Fragment Shader
-            float4 frag(UCLAGL_g2f input) : COLOR
-            {
-                float4 col = UCLAGL_frag(input);
-
-                #if CUTOUT
-                if (col.a < 0.5f) discard;
-                else col.a = 1.0f;
-                #endif
-
-                return col;
-            }
 			ENDCG
 		}
 	}

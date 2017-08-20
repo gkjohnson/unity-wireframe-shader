@@ -90,16 +90,18 @@ void UCLAGL_geom(triangle UCLAGL_v2g p[3], inout TriangleStream<UCLAGL_g2f> triS
 float4 UCLAGL_frag(UCLAGL_g2f input) : COLOR
 {			
 	//find the smallest distance
-	float val = min( input.dist.x, min( input.dist.y, input.dist.z));
+	float val = min(input.dist.x, min( input.dist.y, input.dist.z));
 	
 	//calculate power to 2 to thin the line
-	val = exp2( -1/_Thickness * val * val );
-		
+	val = exp2(-1 / (_Thickness* 5) * val * val);
+    val = pow(val, 5);
+
 	//blend between the lines and the negative space to give illusion of anti aliasing
-	float4 targetColor = _Color * tex2D( _MainTex, input.uv);
-	float4 transCol = _Color * tex2D( _MainTex, input.uv);
-	transCol.a = 0;
-	return val * targetColor + ( 1 - val ) * transCol;
+    float4 targetColor = _Color * tex2D( _MainTex, input.uv);
+	float4 transCol = targetColor;
+	transCol.a = val;
+
+	return transCol;
 }
 
 

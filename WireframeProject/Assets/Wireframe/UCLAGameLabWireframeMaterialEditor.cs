@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 // Custom Material Editor for the UCLA Game Lab Wireframe Shader
 // Enables toggling "cutout" and "double-sided" rendering modes
@@ -26,15 +26,24 @@ public class UCLAGameLabWireframeMaterialEditor : ShaderGUI
                 mat.EnableKeyword("CUTOUT");
                 mat.SetInt("_ZWrite", 1);
                 mat.renderQueue = 2000; // Geometry render queue
+
+                // Use the single pass shader if we're trying
+                // to render double-sided && cutout because 
+                // cutout will write to depth
+                mat.shader = Shader.Find(SINGLE_SIDED_SHADER);
+                mat.SetInt("_Cull", (int) (doubleSided ? CullMode.Off : CullMode.Back));
             }
             else
             {
                 mat.DisableKeyword("CUTOUT");
                 mat.SetInt("_ZWrite", 0);
                 mat.renderQueue = 3000; // Transparent render queue
+
+                // Use the double pass shader if we're
+                // trying to render double-sided
+                mat.shader = Shader.Find(doubleSided ? DOUBLE_SIDED_SHADER : SINGLE_SIDED_SHADER);
+                mat.SetInt("_Cull", (int) CullMode.Back);
             }
-            
-            mat.shader = Shader.Find(doubleSided ? DOUBLE_SIDED_SHADER : SINGLE_SIDED_SHADER);
         }
     }
 

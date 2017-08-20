@@ -8,6 +8,9 @@ Shader "UCLA Game Lab/Wireframe"
 
         [HideInInspector]
         _ZWrite("_ZWrite", Float) = 1.0
+
+        [HideInInspector]
+        _Cull("_Cull", Float) = 2.0
 	}
 
     CustomEditor "UCLAGameLabWireframeMaterialEditor"

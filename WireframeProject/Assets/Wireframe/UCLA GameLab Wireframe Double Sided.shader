@@ -8,6 +8,9 @@ Shader "UCLA Game Lab/Wireframe Double Sided"
 
         [HideInInspector]
         _ZWrite("_ZWrite", Float) = 1.0
+
+        [HideInInspector]
+        _Cull("_Cull", Float) = 2.0
 	}
 
     CustomEditor "UCLAGameLabWireframeMaterialEditor"
@@ -51,12 +54,12 @@ Shader "UCLA Game Lab/Wireframe Double Sided"
 
         // Then front faces
 		Pass
-		{
+        {
             Name "FRONTSIDE"
 
             Blend SrcAlpha OneMinusSrcAlpha
             ZWrite[_ZWrite]
-            Cull Back
+            Cull[_Cull]
 
 			CGPROGRAM
             #include "UnityCG.cginc"

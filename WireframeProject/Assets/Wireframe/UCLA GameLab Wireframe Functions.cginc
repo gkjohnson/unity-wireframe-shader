@@ -28,6 +28,7 @@ struct UCLAGL_g2f
 
 //float4 _Texture_ST;			// For the Main Tex UV transform
 float _Thickness = 1;		// Thickness of the wireframe line rendering
+float _Firmness = 1;		// Thickness of the wireframe line rendering
 float4 _Color = {1,1,1,1};	// Color of the line
 float4 _MainTex_ST;			// For the Main Tex UV transform
 sampler2D _MainTex;			// Texture used for the line
@@ -99,7 +100,7 @@ float4 UCLAGL_frag(UCLAGL_g2f input) : COLOR
 	//blend between the lines and the negative space to give illusion of anti aliasing
     float4 targetColor = _Color * tex2D( _MainTex, input.uv);
 	float4 transCol = targetColor;
-	transCol.a = val;
+	transCol.a = min(val * _Firmness, 1);
 
 	return transCol;
 }

@@ -5,6 +5,7 @@ Shader "UCLA Game Lab/Wireframe Double Sided"
 		_Color ("Line Color", Color) = (1,1,1,1)
 		_MainTex ("Main Texture", 2D) = "white" {}
 		_Thickness ("Thickness", Float) = 1
+		_Firmness ("Line Firmness", Float) = 1
 
         [HideInInspector]
         _ZWrite("_ZWrite", Float) = 1.0

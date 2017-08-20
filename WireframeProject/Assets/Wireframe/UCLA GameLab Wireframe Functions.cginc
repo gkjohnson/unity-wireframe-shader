@@ -93,7 +93,7 @@ float4 UCLAGL_frag(UCLAGL_g2f input) : COLOR
 	//find the smallest distance
 	float val = min(input.dist.x, min(input.dist.y, input.dist.z));
 
-    #if DISTANCE_AGNOSTIC
+    #if !DISTANCE_AGNOSTIC
     val *= input.pos.w;
     #endif
 

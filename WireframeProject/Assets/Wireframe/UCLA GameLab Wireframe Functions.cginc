@@ -1,12 +1,54 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-//Algorithms and shaders based on code from this journal
-//http://cgg-journal.com/2008-2/06/index.html
+// Algorithms and shaders based on code from this journal
+// http://cgg-journal.com/2008-2/06/index.html
+// http://web.archive.org/web/20130322011415/http://cgg-journal.com/2008-2/06/index.html
 
 #ifndef UCLA_GAMELAB_WIREFRAME
 #define UCLA_GAMELAB_WIREFRAME
 
 #include "UnityCG.cginc"
+
+// For use in the Geometry Shader
+// Takes in 3 vectors and calculates the distance to
+// to center of the triangle for each vert
+float3 UCLAGL_CalculateDistToCenter(float4 v0, float4 v1, float4 v2) {
+    // points in screen space
+    float2 ss0 = _ScreenParams.xy * v0.xy / v0.w;
+    float2 ss1 = _ScreenParams.xy * v1.xy / v1.w;
+    float2 ss2 = _ScreenParams.xy * v2.xy / v2.w;
+    
+    // edge vectors
+    float2 e0 = ss2 - ss1;
+    float2 e1 = ss2 - ss0;
+    float2 e2 = ss1 - ss0;
+    
+    // area of the triangle
+    float area = abs(e1.x * e2.y - e1.y * e2.x);
+    
+    // values based on distance to the center of the triangle
+    float dist0 = area / length(e0);
+    float dist1 = area / length(e1);
+    float dist2 = area / length(e2);
+
+    return float3(dist0, dist1, dist2);
+}
+
+// Computes the intensity of the wireframe at a point
+// based on interpolated distances from center for the
+// fragment, thickness, firmness, and perspective correction
+// factor.
+// w = 1 gives screen-space consistent wireframe thickness
+float UCLAGL_GetWireframeAlpha(float3 dist, float thickness, float firmness, float w = 1) {
+    // find the smallest distance
+    float val = min(dist.x, min(dist.y, dist.z));
+    val *= w;
+
+    // calculate power to 2 to thin the line
+    val = exp2(-1 / thickness * val * val);
+    val = min(val * firmness, 1);
+    return val;
+}
+
+
 
 // DATA STRUCTURES //
 // Vertex to Geometry
@@ -26,7 +68,6 @@ struct UCLAGL_g2f
 
 // PARAMETERS //
 
-//float4 _Texture_ST;			// For the Main Tex UV transform
 float _Thickness = 1;		// Thickness of the wireframe line rendering
 float _Firmness = 1;		// Thickness of the wireframe line rendering
 float4 _Color = {1,1,1,1};	// Color of the line
@@ -38,8 +79,8 @@ sampler2D _MainTex;			// Texture used for the line
 UCLAGL_v2g UCLAGL_vert(appdata_base v)
 {
 	UCLAGL_v2g output;
-	output.pos =  UnityObjectToClipPos(v.vertex);
-	output.uv = TRANSFORM_TEX (v.texcoord, _MainTex);//v.texcoord;
+	output.pos = UnityObjectToClipPos(v.vertex);
+	output.uv = TRANSFORM_TEX (v.texcoord, _MainTex);
 
 	return output;
 }
@@ -48,62 +89,40 @@ UCLAGL_v2g UCLAGL_vert(appdata_base v)
 [maxvertexcount(3)]
 void UCLAGL_geom(triangle UCLAGL_v2g p[3], inout TriangleStream<UCLAGL_g2f> triStream)
 {
-	//points in screen space
-	float2 p0 = _ScreenParams.xy * p[0].pos.xy / p[0].pos.w;
-	float2 p1 = _ScreenParams.xy * p[1].pos.xy / p[1].pos.w;
-	float2 p2 = _ScreenParams.xy * p[2].pos.xy / p[2].pos.w;
-	
-	//edge vectors
-	float2 v0 = p2 - p1;
-	float2 v1 = p2 - p0;
-	float2 v2 = p1 - p0;
+    float3 dist = UCLAGL_CalculateDistToCenter(p[0].pos, p[1].pos, p[2].pos);
 
-	//area of the triangle
- 	float area = abs(v1.x*v2.y - v1.y * v2.x);
-
-	//values based on distance to the edges
-	float dist0 = area / length(v0);
-	float dist1 = area / length(v1);
-	float dist2 = area / length(v2);
-	
 	UCLAGL_g2f pIn;
 	
-	//add the first point
+	// add the first point
 	pIn.pos = p[0].pos;
 	pIn.uv = p[0].uv;
-	pIn.dist = float3(dist0,0,0);
+	pIn.dist = float3(dist.x, 0, 0);
 	triStream.Append(pIn);
 
-	//add the second point
+	// add the second point
 	pIn.pos =  p[1].pos;
 	pIn.uv = p[1].uv;
-	pIn.dist = float3(0,dist1,0);
+	pIn.dist = float3(0, dist.y, 0);
 	triStream.Append(pIn);
 	
-	//add the third point
+	// add the third point
 	pIn.pos = p[2].pos;
 	pIn.uv = p[2].uv;
-	pIn.dist = float3(0,0,dist2);
+	pIn.dist = float3(0, 0, dist.z);
 	triStream.Append(pIn);
 }
 
 // Fragment Shader
 float4 UCLAGL_frag(UCLAGL_g2f input) : COLOR
-{			
-	//find the smallest distance
-	float val = min(input.dist.x, min(input.dist.y, input.dist.z));
-
-    #if !UCLAGL_DISTANCE_AGNOSTIC
-    val *= input.pos.w;
+{
+    float w = input.pos.w;
+    #if UCLAGL_DISTANCE_AGNOSTIC
+    w = 1;
     #endif
 
-    //calculate power to 2 to thin the line
-	val = exp2(-1 / (_Thickness* 5) * val * val);
-    val = pow(val, 5);
-
-	//blend between the lines and the negative space to give illusion of anti aliasing
-    float4 col = _Color * tex2D( _MainTex, input.uv);
-	col.a = min(val * _Firmness, 1);
+    float alpha = UCLAGL_GetWireframeAlpha(input.dist, _Thickness, _Firmness, w);
+    float4 col = _Color * tex2D(_MainTex, input.uv);
+    col.a *= alpha;
 
     #if UCLAGL_CUTOUT
     if (col.a < 0.5f) discard;

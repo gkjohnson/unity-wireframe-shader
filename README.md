@@ -11,12 +11,21 @@ Renders a line along every edge between every vertex. Requires Geometry Shaders,
 Only renders wireframe. Two passes can be rendered to render wireframe on top of another solid material or shader can be easily modified to render both in the same pass.
 
 ## Wireframe Options
-### Thickness
-How thick the wireframe is
+#### Thickness
+How thick the wireframe line is.
 
-### Cutout
-Whether or not to discard pixels outside the wireframe, creating a harder edge, but can draw to depth
+#### Line Firmness
+How firm the edges of the wireframe line are when rendering _without_ cutout enabled.
 
-## TODO
-- [ ] Move all shader variants into one shader using keywords
-- [ ] Build a custom material inspector
+#### Cutout
+Whether or not to discard pixels outside the wireframe, creating a harder and aliased edge, but can draw to depth in a single pass.
+
+#### Screenspace Thickness
+Whether or not the wireframe line should be a consistent thickness in screenspace while the camera moves.
+
+#### Double Sided
+Whether or not to draw the back faces with wireframe or not
+
+## Extending and Reuse
+
+The functions used to generate the wireframe are available in the [UCLA GameLab Wireframe Functions.cginc](WireframeProject/Assets/Wireframe/UCLA%20GameLab%20Wireframe%20Functions.cginc) so they can easily be added to and used with other functions.

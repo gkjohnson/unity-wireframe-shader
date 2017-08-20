@@ -28,6 +28,7 @@ struct UCLAGL_g2f
 
 //float4 _Texture_ST;			// For the Main Tex UV transform
 float _Thickness = 1;		// Thickness of the wireframe line rendering
+float _Firmness = 1;		// Thickness of the wireframe line rendering
 float4 _Color = {1,1,1,1};	// Color of the line
 float4 _MainTex_ST;			// For the Main Tex UV transform
 sampler2D _MainTex;			// Texture used for the line
@@ -90,17 +91,26 @@ void UCLAGL_geom(triangle UCLAGL_v2g p[3], inout TriangleStream<UCLAGL_g2f> triS
 float4 UCLAGL_frag(UCLAGL_g2f input) : COLOR
 {			
 	//find the smallest distance
-	float val = min( input.dist.x, min( input.dist.y, input.dist.z));
-	
-	//calculate power to 2 to thin the line
-	val = exp2( -1/_Thickness * val * val );
-		
-	//blend between the lines and the negative space to give illusion of anti aliasing
-	float4 targetColor = _Color * tex2D( _MainTex, input.uv);
-	float4 transCol = _Color * tex2D( _MainTex, input.uv);
-	transCol.a = 0;
-	return val * targetColor + ( 1 - val ) * transCol;
-}
+	float val = min(input.dist.x, min(input.dist.y, input.dist.z));
 
+    #if !DISTANCE_AGNOSTIC
+    val *= input.pos.w;
+    #endif
+
+    //calculate power to 2 to thin the line
+	val = exp2(-1 / (_Thickness* 5) * val * val);
+    val = pow(val, 5);
+
+	//blend between the lines and the negative space to give illusion of anti aliasing
+    float4 col = _Color * tex2D( _MainTex, input.uv);
+	col.a = min(val * _Firmness, 1);
+
+    #if CUTOUT
+    if (col.a < 0.5f) discard;
+    col.a = 1.0f;
+    #endif
+
+	return col;
+}
 
 #endif

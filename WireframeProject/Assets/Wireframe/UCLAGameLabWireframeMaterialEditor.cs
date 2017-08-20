@@ -1,26 +1,27 @@
 ﻿using System.Collections;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 // Custom Material Editor for the UCLA Game Lab Wireframe Shader
 // Enables toggling "cutout" and "double-sided" rendering modes
-public class WireframeMaterialEditor : ShaderGUI
+public class UCLAGameLabWireframeMaterialEditor : ShaderGUI
 {
-    bool _cutout = false;
-    bool _doubleSided = false;
+    const string DOUBLE_SIDED_SHADER = "UCLA Game Lab/Wireframe Double Sided";
+    const string SINGLE_SIDED_SHADER = "UCLA Game Lab/Wireframe";
+
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
     {
         base.OnGUI(materialEditor, properties);
 
+        Material mat = materialEditor.target as Material;
+
         EditorGUI.BeginChangeCheck();
-        _cutout = EditorGUILayout.Toggle("Cutout", _cutout);
-        _doubleSided = EditorGUILayout.Toggle("Double Sided", _doubleSided);
+        bool cutout = EditorGUILayout.Toggle("Cutout", mat.IsKeywordEnabled("CUTOUT"));
+        bool doubleSided = EditorGUILayout.Toggle("Double Sided", mat.shader.name == DOUBLE_SIDED_SHADER);
         if (EditorGUI.EndChangeCheck())
         {
-            Material mat = materialEditor.target as Material;
-
-            if (_cutout)
+            
+            if (cutout)
             {
                 mat.EnableKeyword("CUTOUT");
                 mat.SetInt("_ZWrite", 1);
@@ -32,9 +33,8 @@ public class WireframeMaterialEditor : ShaderGUI
                 mat.SetInt("_ZWrite", 0);
                 mat.renderQueue = 3000; // Transparent render queue
             }
-
-            // mat.SetInt("_Cull", (int)(_doubleSided ? CullMode.Off : CullMode.Back));
-            mat.SetShaderPassEnabled("BACKSIDE", false);            
+            
+            mat.shader = Shader.Find(doubleSided ? DOUBLE_SIDED_SHADER : SINGLE_SIDED_SHADER);
         }
     }
 

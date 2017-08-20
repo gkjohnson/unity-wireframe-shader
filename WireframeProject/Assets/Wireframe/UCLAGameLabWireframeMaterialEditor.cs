@@ -17,7 +17,6 @@ public class UCLAGameLabWireframeMaterialEditor : ShaderGUI
 
         EditorGUI.BeginChangeCheck();
 
-        Debug.Log(mat.GetFloat("_Cull"));
         bool cutout = EditorGUILayout.Toggle("Cutout", mat.IsKeywordEnabled("CUTOUT"));
         bool distanceAgnostic = EditorGUILayout.Toggle("Distance Agnostic", mat.IsKeywordEnabled("DISTANCE_AGNOSTIC"));
         bool doubleSided = EditorGUILayout.Toggle("Double Sided", mat.shader.name == DOUBLE_SIDED_SHADER || mat.GetFloat("_Cull") == (float)CullMode.Off);

@@ -36,8 +36,8 @@ Shader "UCLA Game Lab/Wireframe Double Sided"
             #pragma vertex UCLAGL_vert
             #pragma geometry UCLAGL_geom
             #pragma fragment UCLAGL_frag
-            #pragma shader_feature CUTOUT
-            #pragma shader_feature DISTANCE_AGNOSTIC
+            #pragma shader_feature UCLAGL_CUTOUT
+            #pragma shader_feature UCLAGL_DISTANCE_AGNOSTIC
 
 			ENDCG
 		}
@@ -58,8 +58,8 @@ Shader "UCLA Game Lab/Wireframe Double Sided"
             #pragma vertex UCLAGL_vert
             #pragma geometry UCLAGL_geom
             #pragma fragment UCLAGL_frag
-            #pragma shader_feature CUTOUT
-            #pragma shader_feature DISTANCE_AGNOSTIC
+            #pragma shader_feature UCLAGL_CUTOUT
+            #pragma shader_feature UCLAGL_DISTANCE_AGNOSTIC
 
 			ENDCG
 		}

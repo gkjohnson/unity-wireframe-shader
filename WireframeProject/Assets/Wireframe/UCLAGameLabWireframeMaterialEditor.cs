@@ -9,6 +9,9 @@ public class UCLAGameLabWireframeMaterialEditor : ShaderGUI
     const string DOUBLE_SIDED_SHADER = "UCLA Game Lab/Wireframe Double Sided";
     const string SINGLE_SIDED_SHADER = "UCLA Game Lab/Wireframe";
 
+    const string DISTANCE_AGNOSTIC_KEYWORD = "UCLAGL_DISTANCE_AGNOSTIC";
+    const string CUTOUT_KEYWORD = "UCLAGL_CUTOUT";
+
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
     {
         base.OnGUI(materialEditor, properties);
@@ -17,15 +20,15 @@ public class UCLAGameLabWireframeMaterialEditor : ShaderGUI
 
         EditorGUI.BeginChangeCheck();
 
-        bool cutout = EditorGUILayout.Toggle("Cutout", mat.IsKeywordEnabled("CUTOUT"));
-        bool distanceAgnostic = EditorGUILayout.Toggle("Screenspace Thickness", mat.IsKeywordEnabled("DISTANCE_AGNOSTIC"));
+        bool cutout = EditorGUILayout.Toggle("Cutout", mat.IsKeywordEnabled(CUTOUT_KEYWORD));
+        bool distanceAgnostic = EditorGUILayout.Toggle("Screenspace Thickness", mat.IsKeywordEnabled(DISTANCE_AGNOSTIC_KEYWORD));
         bool doubleSided = EditorGUILayout.Toggle("Double Sided", mat.shader.name == DOUBLE_SIDED_SHADER || mat.GetFloat("_Cull") == (float)CullMode.Off);
 
         if (EditorGUI.EndChangeCheck())
         {
             if (cutout)
             {
-                mat.EnableKeyword("CUTOUT");
+                mat.EnableKeyword(CUTOUT_KEYWORD);
                 mat.SetInt("_ZWrite", 1);
                 mat.renderQueue = 2000; // Geometry render queue
 
@@ -37,7 +40,7 @@ public class UCLAGameLabWireframeMaterialEditor : ShaderGUI
             }
             else
             {
-                mat.DisableKeyword("CUTOUT");
+                mat.DisableKeyword(CUTOUT_KEYWORD);
                 mat.SetInt("_ZWrite", 0);
                 mat.renderQueue = 3000; // Transparent render queue
 
@@ -48,8 +51,8 @@ public class UCLAGameLabWireframeMaterialEditor : ShaderGUI
             }
 
             // Toggle 
-            if (distanceAgnostic) mat.EnableKeyword("DISTANCE_AGNOSTIC");
-            else mat.DisableKeyword("DISTANCE_AGNOSTIC");
+            if (distanceAgnostic) mat.EnableKeyword(DISTANCE_AGNOSTIC_KEYWORD);
+            else mat.DisableKeyword(DISTANCE_AGNOSTIC_KEYWORD);
         }
     }
 

@@ -3,12 +3,16 @@
 
 Unity wireframe material using Geometry Shaders built for the [UCLA Game Lab](http://games.ucla.edu/resource/unity-wireframe-shader/) and [Unity Asset Store](https://www.assetstore.unity3d.com/en/#!/content/21897) in 2013.
 
-Based on work from [this paper](http://cgg-journal.com/2008-2/06/index.html).
+Based on work from [this paper](http://cgg-journal.com/2008-2/06/index.html) (which is no longer available -- a web-archive version is available [here](http://web.archive.org/web/20130322011415/http://cgg-journal.com/2008-2/06/index.html))
 
 ## Use
 Renders a line along every edge between every vertex. Requires Geometry Shaders, so this only works on DX11.
 
 Only renders wireframe. Two passes can be rendered to render wireframe on top of another solid material or shader can be easily modified to render both in the same pass.
+
+### Requirements
+
+This material uses the geometry shader, which is only available with DirectX in Unity.
 
 ## Wireframe Options
 #### Thickness

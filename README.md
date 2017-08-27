@@ -32,4 +32,4 @@ Whether or not to draw the back faces with wireframe or not
 
 ## Extending and Reuse
 
-The functions used to generate the wireframe are available in the [UCLA GameLab Wireframe Functions.cginc](WireframeProject/Assets/Wireframe/UCLA%20GameLab%20Wireframe%20Functions.cginc) so they can easily be added to and used with other functions.
+The functions used to generate the wireframe are available in the [UCLA GameLab Wireframe Functions.cginc](Assets/Wireframe/UCLA%20GameLab%20Wireframe%20Functions.cginc) so they can easily be added to and used with other shaders and functions.

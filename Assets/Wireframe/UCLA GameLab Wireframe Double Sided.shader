@@ -31,7 +31,7 @@ Shader "UCLA Game Lab/Wireframe Double Sided"
 
 			CGPROGRAM
             #include "UnityCG.cginc"
-            #include "UCLA GameLab Wireframe Functions.cginc"
+            #include "UCLA GameLab Wireframe Shaders.cginc"
             #pragma target 5.0
             #pragma vertex UCLAGL_vert
             #pragma geometry UCLAGL_geom
@@ -53,7 +53,7 @@ Shader "UCLA Game Lab/Wireframe Double Sided"
 
 			CGPROGRAM
             #include "UnityCG.cginc"
-            #include "UCLA GameLab Wireframe Functions.cginc"
+            #include "UCLA GameLab Wireframe Shaders.cginc"
             #pragma target 5.0
             #pragma vertex UCLAGL_vert
             #pragma geometry UCLAGL_geom

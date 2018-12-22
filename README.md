@@ -1,7 +1,7 @@
 # unity-wireframe-shader
 ![example](/docs/example.png)
 
-Unity wireframe material using Geometry Shaders built for the [UCLA Game Lab](http://games.ucla.edu/resource/unity-wireframe-shader/) and [Unity Asset Store](https://www.assetstore.unity3d.com/en/#!/content/21897) in 2013.
+Unity wireframe material using Geometry Shaders built for the [UCLA Game Lab](http://games.ucla.edu/resource/unity-wireframe-shader/) and [Unity Asset Store](https://assetstore.unity.com/packages/vfx/shaders/directx-11/ucla-wireframe-shader-21897) in 2013.
 
 Based on work from [this paper](http://cgg-journal.com/2008-2/06/index.html) (which is no longer available -- a web-archive version is available [here](http://web.archive.org/web/20130322011415/http://cgg-journal.com/2008-2/06/index.html))
 
